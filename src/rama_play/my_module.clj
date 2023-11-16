@@ -1,25 +1,25 @@
-(ns rama-clojure-starter.my-module
-  (:use [com.rpl.rama]
-        [com.rpl.rama.path])
+(ns rama-play.my-module
   (:require [com.rpl.rama.aggs :as aggs]
             [com.rpl.rama.ops :as ops]
-            [com.rpl.rama.test :as rtest]))
+            [com.rpl.rama.test :as rtest]
+            [com.rpl.rama :as rm]
+            [com.rpl.rama.path :as rp]))
 
 (defrecord MyRecord [key value])
-(defmodule MyModule [setup topologies]
-  (declare-depot setup *mydepot (hash-by :key))
-  (declare-depot setup *mydepot2 (hash-by :key))
-  (let [s (stream-topology topologies "s")]
-    (declare-pstate s $$mypstate {Long String})
+(rm/defmodule MyModule [setup topologies]
+  (rm/declare-depot setup *mydepot (rm/hash-by :key))
+  (rm/declare-depot setup *mydepot2 (rm/hash-by :key))
+  (let [s (rm/stream-topology topologies "s")]
+    (rm/declare-pstate s $$mypstate {Long String})
     ;; (declare-pstate s $$mypstate2 (map-schema Long String))
-    (declare-pstate s $$mypstate2 {Long String})
-    (<<sources s
-               (source> *mydepot :> {:keys [*key *value] :as *input})
+    (rm/declare-pstate s $$mypstate2 {Long String})
+    (rm/<<sources s
+               (rm/source> *mydepot :> {:keys [*key *value] :as *input})
                (println "depot 1 adding " *key " and value " *value)
-               (local-transform> [(keypath *key) (termval *value)] $$mypstate)
-               (source> *mydepot2 :> {:keys [*key *value] :as *input})
+               (rm/local-transform> [(rp/keypath *key) (rp/termval *value)] $$mypstate)
+               (rm/source> *mydepot2 :> {:keys [*key *value] :as *input})
                (println "depot 2 adding " *key " and value " *value)
-               (local-transform> [(keypath *key) (termval *value)] $$mypstate2))))
+               (rm/local-transform> [(rp/keypath *key) (rp/termval *value)] $$mypstate2))))
 
 
 (comment
@@ -36,7 +36,4 @@
           myresult2 (foreign-select-one (keypath 1) mypstate2)]
       (println "from depot 1 " myresult)
       (println "from depot 2 " myresult2)))
-  (def myrange (range 0 10))
-  (map (fn [x] (println "hello " x)) myrange)
-
   )

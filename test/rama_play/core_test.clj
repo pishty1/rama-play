@@ -1,11 +1,11 @@
-(ns rama-clojure-starter.core-test
+(ns rama_play.core-test
   (:use [clojure.test]
         [com.rpl.rama]
         [com.rpl.rama.path])
   (:require [com.rpl.rama.aggs :as aggs]
             [com.rpl.rama.ops :as ops]
             [com.rpl.rama.test :as rtest]
-            [rama-clojure-starter.my-module :as mm]))
+            [rama_play.my-module :as mm]))
 
 (deftest module-test
   (with-open [ipc (rtest/create-ipc)]

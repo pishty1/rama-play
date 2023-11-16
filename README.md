@@ -1,4 +1,4 @@
-# rama-clojure-starter
+# rama play
 
 An empty Clojure project configured for developing with Rama.
 
